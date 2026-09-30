@@ -1,0 +1,97 @@
+[gd_scene load_steps=3 format=3 uid="uid://garden001"]
+
+[ext_resource type="Script" path="res://scenes/Garden.gd" id="1"]
+[ext_resource type="PackedScene" path="res://components/SignalPanel.tscn" id="2"]
+
+[node name="Garden" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1")
+
+[node name="BG" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.039, 0.121, 0.078, 1)
+
+[node name="Root" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = -12.0
+theme_override_constants/separation = 12
+
+[node name="TopBar" type="HBoxContainer" parent="Root"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="MenuButton" type="Button" parent="Root/TopBar"]
+layout_mode = 2
+text = "Menu"
+
+[node name="FragmentsLabel" type="Label" parent="Root/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Fragments: 0"
+horizontal_alignment = 1
+
+[node name="TickLabel" type="Label" parent="Root/TopBar"]
+layout_mode = 2
+text = "Tick: 0"
+
+[node name="RightPanel" type="VBoxContainer" parent="Root"]
+layout_mode = 2
+
+[node name="SignalPanel" parent="Root/RightPanel" instance=ExtResource("2")]
+layout_mode = 2
+
+[node name="LeftPanel" type="VBoxContainer" parent="Root"]
+layout_mode = 2
+
+[node name="Dials" type="VBoxContainer" parent="Root/LeftPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CenterPanel" type="PanelContainer" parent="Root"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Plots" type="GridContainer" parent="Root/CenterPanel"]
+layout_mode = 2
+columns = 3
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+
+[node name="LogPanel" type="PanelContainer" parent="Root"]
+layout_mode = 2
+
+[node name="LogLabel" type="Label" parent="Root/LogPanel"]
+layout_mode = 2
+text = "..."
+
+[node name="BottomBar" type="HBoxContainer" parent="Root"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SeedPicker" type="OptionButton" parent="Root/BottomBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TickButton" type="Button" parent="Root/BottomBar"]
+layout_mode = 2
+text = "Tick"
+
+[node name="HarvestButton" type="Button" parent="Root/BottomBar"]
+layout_mode = 2
+text = "Harvest"
+
+[node name="UnlockButton" type="Button" parent="Root/BottomBar"]
+layout_mode = 2
+text = "Unlock (5)"

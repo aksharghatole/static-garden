@@ -1,0 +1,13 @@
+.godot/
+*.translation
+build/
+*.apk
+*.aab
+*.idsig
+.DS_Store
+Thumbs.db
+.vscode/
+*.code-workspace
+*.keystore
+*.jks
+.env
