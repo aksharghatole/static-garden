@@ -2,14 +2,18 @@
 
 A cozy puzzle game: plant seeds guided by signals from a dying satellite.
 
-## Codespaces quickstart
+## First-time setup (GitHub Codespaces)
 
-    source ~/.bashrc
-    build
+```sh
+bash scripts/setup-codespace.sh
+source ~/.bashrc
+```
 
-Produces build/static-garden-debug.apk.
+## Build the Android APK
 
-## First-time setup
+```sh
+source ~/.bashrc
+build
+```
 
-    bash scripts/setup-codespace.sh
-    source ~/.bashrc
+The build output is `build/static-garden-debug.apk`.
