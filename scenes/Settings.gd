@@ -1,14 +1,17 @@
 extends Control
 
 @onready var master: HSlider = $Root/VBox/MasterSlider
+@onready var music: HSlider = $Root/VBox/MusicSlider
 @onready var sfx: HSlider = $Root/VBox/SfxSlider
 @onready var reset_btn: Button = $Root/VBox/ResetButton
 @onready var back_btn: Button = $Root/VBox/BackButton
 
 func _ready() -> void:
 	master.value = AudioManager.master_volume
+	music.value = AudioManager.music_volume
 	sfx.value = AudioManager.sfx_volume
 	master.value_changed.connect(func(v): AudioManager.set_master_volume(v))
+	music.value_changed.connect(func(v): AudioManager.set_music_volume(v))
 	sfx.value_changed.connect(func(v): AudioManager.set_sfx_volume(v))
 	reset_btn.pressed.connect(_on_reset)
 	back_btn.pressed.connect(_on_back)

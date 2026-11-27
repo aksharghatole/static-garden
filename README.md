@@ -6,6 +6,10 @@ A cozy, offline garden puzzle game about growing plants guided by signals from a
 
 Harvest a mature base plant beside another mature base plant for a 25% chance to discover one new hybrid. The six hybrids can be planted like ordinary seeds and are recorded in the journal. Only horizontal and vertical neighbors count; normal harvest rewards are retained.
 
+## Soundscape
+
+An original looping ambient synthesizer and six short interaction sounds are generated locally from PCM samples, with no external audio files or network access. Master, ambient and effects volumes are independently adjustable and saved between sessions.
+
 ## Controls
 
 Use the garden Menu button, Android system Back, or Escape on desktop to open the pause overlay. Resume returns to the garden, or choose Main menu / Save and quit. Back from the journal or settings returns to the main menu; Back on the main menu saves and exits.
@@ -53,7 +57,7 @@ Use a disposable user data directory when running tests to avoid modifying perso
 ## Current limitations
 
 - Android debug APKs target ARM64; physical-device testing is still needed.
-- Audio assets and extended progression are planned.
+- Extended progression is planned.
 - Further visual polish is tracked in [issues](https://github.com/aksharghatole/static-garden/issues).
 
 Built with [Godot](https://godotengine.org/). See [LICENSE](LICENSE) for licensing.
