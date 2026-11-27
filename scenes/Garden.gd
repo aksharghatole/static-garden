@@ -1,7 +1,7 @@
 extends Control
 
 const PLANT_DEFS := preload("res://data/plants.gd")
-const STAGE_LABELS: Array[String] = ["seed", "sprout", "ready"]
+const PLOT_VIEW := preload("res://components/PlotView.tscn")
 
 @onready var dials_box: VBoxContainer = $Root/LeftPanel/Dials
 @onready var signal_panel: Control = $Root/RightPanel/SignalPanel
@@ -41,9 +41,7 @@ func _build_dials() -> void:
 
 func _build_plots() -> void:
 	for i in GameState.PLOT_COUNT:
-		var b := Button.new()
-		b.custom_minimum_size = Vector2(120, 120)
-		b.text = "Empty"
+		var b = PLOT_VIEW.instantiate()
 		b.pressed.connect(_on_plot_pressed.bind(i))
 		plots_grid.add_child(b)
 
@@ -62,14 +60,8 @@ func _refresh() -> void:
 		if i >= GameState.plots.size():
 			break
 		var plot: Dictionary = GameState.plots[i]
-		var btn: Button = plots_grid.get_child(i)
-		if plot["plant_id"] == "":
-			btn.text = "Empty"
-		else:
-			var stage: int = int(plot["stage"])
-			var pname: String = PLANT_DEFS.display_name(plot["plant_id"])
-			var state: String = STAGE_LABELS[stage]
-			btn.text = "%s\n(%s)" % [pname, state]
+		var view = plots_grid.get_child(i)
+		view.set_plot(plot)
 
 	if signal_panel and signal_panel.has_method("refresh"):
 		signal_panel.refresh()
