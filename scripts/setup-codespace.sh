@@ -35,4 +35,9 @@ if [[ ! -f "$keystore" ]]; then
   mkdir -p "$(dirname "$keystore")"
   "$JAVA_HOME/bin/keytool" -genkeypair -keyalg RSA -keysize 2048 -alias androiddebugkey -keypass android -keystore "$keystore" -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999 -deststoretype pkcs12
 fi
+profile_line='export PATH="$HOME/godot:$PATH"'
+build_alias='alias build="bash scripts/export-android.sh"'
+touch "$HOME/.bashrc"
+grep -qxF "$profile_line" "$HOME/.bashrc" || echo "$profile_line" >> "$HOME/.bashrc"
+grep -qxF "$build_alias" "$HOME/.bashrc" || echo "$build_alias" >> "$HOME/.bashrc"
 echo "Setup complete. Run bash build-apk.sh from the repository."
