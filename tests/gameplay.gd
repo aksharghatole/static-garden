@@ -66,6 +66,54 @@ func _ready() -> void:
 	plot.pressed.emit()
 	check(plot.plant_id == "" and GameState.fragments == 1, "Mature plot tap should harvest")
 	garden.queue_free()
+	_test_hybrids()
 	if failures == 0:
 		print("Gameplay regression tests passed")
 	get_tree().quit(0 if failures == 0 else 1)
+
+func _test_hybrids() -> void:
+	var defs := preload("res://data/plants.gd")
+	check(defs.HYBRID_IDS.size() == 6, "Six unique hybrids")
+	check(defs.hybrid_of("moss", "fern") == "mist", "Parent order independent")
+	check(defs.hybrid_of("fern", "moss") == "mist", "Reverse parent order")
+	check(defs.hybrid_of("fern", "fern") == "", "Same species cannot hybridize")
+	check(not GameState.adjacent_plots(2).has(3), "No row wrapping")
+	var probe := RandomNumberGenerator.new()
+	var winning_seed := -1
+	for candidate in range(1000):
+		probe.seed = candidate
+		if probe.randf() < GameState.HYBRID_CHANCE:
+			winning_seed = candidate
+			break
+	check(winning_seed >= 0, "Find deterministic hybrid roll")
+	if winning_seed < 0:
+		return
+	GameState.new_game()
+	GameState.plots[0] = {"plant_id": "moss", "stage": 2, "ticks": 0}
+	GameState.plots[4] = {"plant_id": "fern", "stage": 2, "ticks": 0}
+	GameState.rng.seed = winning_seed
+	check(GameState.try_hybrid(0) == "", "Diagonal neighbors do not qualify")
+	GameState.plots[1] = {"plant_id": "fern", "stage": 1, "ticks": 0}
+	check(GameState.try_hybrid(0) == "", "Immature neighbor does not qualify")
+	GameState.plots[1]["stage"] = 2
+	GameState.rng.seed = winning_seed
+	GameState.harvest(0)
+	check(GameState.unlocked_hybrids.has("mist"), "Harvest discovers hybrid")
+	check(GameState.unlocked_plants.has("mist"), "Hybrid is plantable")
+	check(GameState.fragments == 1, "Harvest retains base reward")
+	check(GameState.plant(0, "mist"), "Discovered seed can be planted")
+	GameState.plots[0]["stage"] = 2
+	GameState.harvest(0)
+	check(GameState.fragments == 6, "Hybrid reward applied")
+	var saved = JSON.parse_string(JSON.stringify(GameState.to_dict()))
+	GameState.new_game()
+	GameState.from_dict(saved)
+	check(GameState.unlocked_hybrids.has("mist"), "Hybrid survives save round trip")
+	var journal = preload("res://scenes/Journal.tscn").instantiate()
+	add_child(journal)
+	var found := false
+	for child in journal.get_node("Root/Scroll/List").get_children():
+		if child is Label and child.text.begins_with("Mist"):
+			found = true
+	check(found, "Journal shows discovered hybrid")
+	journal.queue_free()
