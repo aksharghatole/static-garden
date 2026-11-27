@@ -65,6 +65,7 @@ func _ready() -> void:
 	check(plot.stage == 2 and plot.stage_label.text == "Ready", "View should display mature plant")
 	plot.pressed.emit()
 	check(plot.plant_id == "" and GameState.fragments == 1, "Mature plot tap should harvest")
+	check(plot.harvest_effect.reward == 1 and plot.harvest_effect.progress == 0.0, "Harvest triggers reward animation")
 	check(SceneRouter.back_action(SceneRouter.MENU) == "quit", "Main menu back saves and quits")
 	check(SceneRouter.back_action(SceneRouter.JOURNAL) == "menu", "Journal back returns to menu")
 	check(SceneRouter.back_action(SceneRouter.SETTINGS) == "menu", "Settings back returns to menu")
@@ -79,6 +80,7 @@ func _ready() -> void:
 	check(not get_tree().paused, "Resume button unpauses")
 	garden.queue_free()
 	_test_hybrids()
+	await _test_hybrid_art()
 	if failures == 0:
 		print("Gameplay regression tests passed")
 	get_tree().quit(0 if failures == 0 else 1)
@@ -129,3 +131,15 @@ func _test_hybrids() -> void:
 			found = true
 	check(found, "Journal shows discovered hybrid")
 	journal.queue_free()
+
+func _test_hybrid_art() -> void:
+	var defs := preload("res://data/plants.gd")
+	var art = preload("res://components/PlantArt.gd").new()
+	add_child(art)
+	art.size = Vector2(96, 96)
+	for pid in defs.HYBRID_IDS:
+		art.set_plant(pid, 2)
+		await get_tree().process_frame
+		await get_tree().process_frame
+		check(art.plant_id == pid and art.stage == 2, "Hybrid art displays " + pid)
+	art.queue_free()

@@ -84,6 +84,52 @@ func _draw() -> void:
 				var offset := Vector2.RIGHT.rotated(angle) * 9
 				leaf(Vector2(0, -15) + offset, 10, 5, angle, tint.lightened(0.12))
 			draw_circle(Vector2(0, -15), 4.2, Color("#e9bb78"))
+		"mist":
+			for i in range(6):
+				var angle := TAU * float(i) / 6.0
+				var point := Vector2(cos(angle) * 12, sin(angle) * 8 + 5)
+				draw_circle(point, 7, tint.darkened(0.14))
+				leaf(point + Vector2(0, -6), 8, 3, angle, tint.lightened(0.2))
+			for i in range(3):
+				draw_circle(Vector2(-13 + i * 13, -17 - (i % 2) * 6), 2, Color(tint, 0.65))
+		"dewbell":
+			for i in range(3):
+				var x := float(i - 1) * 15.0
+				var y := -12.0 - float(i % 2) * 9.0
+				draw_line(Vector2(0, 12), Vector2(x, y), Color("#8cb68a"), 1.4, true)
+				leaf(Vector2(x, y + 4), 7, 5, PI / 2, tint)
+				draw_circle(Vector2(x, y + 10), 2.8, Color("#d5e5b5"))
+		"voidmoss":
+			for i in range(8):
+				var angle := TAU * float(i) / 8.0
+				var point := Vector2(cos(angle) * 15, sin(angle) * 10 + 4)
+				draw_circle(point, 7, tint.darkened(0.35))
+				draw_circle(point + Vector2(0, -3), 2.2, tint.lightened(0.3))
+			draw_circle(Vector2(0, 2), 8, Color("#30264d"))
+			draw_arc(Vector2(0, 2), 10, 0, TAU, 36, tint, 1.8, true)
+		"fernlily":
+			for i in range(4):
+				var y := 12.0 - float(i) * 8.0
+				leaf(Vector2(-9, y), 11 - i, 3, 0.55, Color("#83af78"))
+				leaf(Vector2(9, y), 11 - i, 3, -0.55, tint)
+			for i in range(6):
+				var angle := TAU * float(i) / 6.0
+				leaf(Vector2(0, -20) + Vector2.RIGHT.rotated(angle) * 6, 7, 3, angle, tint.lightened(0.22))
+			draw_circle(Vector2(0, -20), 3, Color("#e9bb78"))
+		"thornfern":
+			for i in range(5):
+				var y := 14.0 - float(i) * 8.0
+				var span := 19.0 - float(i) * 2.2
+				for side in [-1.0, 1.0]:
+					var points := PackedVector2Array([Vector2(0, y + 3), Vector2(side * span, y - 9), Vector2(side * 5, y - 4)])
+					draw_colored_polygon(points, tint.darkened(float(i % 2) * 0.18))
+			draw_circle(Vector2(0, -23), 3.4, tint.lightened(0.25))
+		"moonflower":
+			for i in range(9):
+				var angle := TAU * float(i) / 9.0
+				leaf(Vector2(0, -13) + Vector2.RIGHT.rotated(angle) * 10, 12, 4.5, angle, tint.darkened(0.12))
+			draw_circle(Vector2(0, -13), 7, Color("#e9bb78"))
+			draw_circle(Vector2(3, -16), 6, Color("#574867"))
 		_:
 			for i in range(5):
 				var angle := TAU * float(i) / 5.0
