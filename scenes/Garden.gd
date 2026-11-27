@@ -32,6 +32,7 @@ func _ready() -> void:
 
 	SignalBus.model_changed.connect(_refresh)
 	SignalBus.log_added.connect(_on_log)
+	SignalBus.plant_harvested.connect(_on_plant_harvested)
 	_refresh()
 
 func _build_dials() -> void:
@@ -127,6 +128,11 @@ func _on_unlock() -> void:
 			GameState.add_log("Need 5 fragments to unlock a new seed.")
 		else:
 			GameState.add_log("All base seeds unlocked. Harvest neighboring mature plants to discover hybrids.")
+
+func _on_plant_harvested(index: int, pid: String, amount: int) -> void:
+	if index >= 0 and index < plots_grid.get_child_count():
+		var view = plots_grid.get_child(index)
+		view.celebrate_harvest(pid, amount)
 
 func _on_log(msg: String) -> void:
 	log_label.text = msg
