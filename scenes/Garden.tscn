@@ -15,7 +15,7 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0.039, 0.121, 0.078, 1)
+color = Color(0.043, 0.09, 0.082, 1)
 
 [node name="Root" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -74,6 +74,7 @@ layout_mode = 2
 
 [node name="LogLabel" type="Label" parent="Root/LogPanel"]
 layout_mode = 2
+autowrap_mode = 3
 text = "..."
 
 [node name="BottomBar" type="HBoxContainer" parent="Root"]
@@ -86,7 +87,7 @@ size_flags_horizontal = 3
 
 [node name="TickButton" type="Button" parent="Root/BottomBar"]
 layout_mode = 2
-text = "Tick"
+text = "Advance"
 
 [node name="HarvestButton" type="Button" parent="Root/BottomBar"]
 layout_mode = 2

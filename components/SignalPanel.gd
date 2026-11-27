@@ -8,3 +8,4 @@ func refresh() -> void:
 	var strength := int(round(GameState.signal_match_strength() * 100.0))
 	target_label.text = "Target  F:%d A:%d P:%d" % [t["frequency"], t["amplitude"], t["phase"]]
 	match_label.text = "Match: %d%%" % strength
+	$VBox/Strength.value = strength
