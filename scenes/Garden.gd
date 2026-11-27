@@ -37,6 +37,7 @@ func _build_dials() -> void:
 		dial.axis = axis
 		dial.label_text = axis.to_upper()
 		dials_box.add_child(dial)
+		dial.set_value(int(GameState.antenna[axis]))
 		dial.value_changed.connect(_on_dial_changed)
 
 func _build_plots() -> void:

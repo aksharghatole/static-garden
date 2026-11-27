@@ -15,7 +15,7 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0.06, 0.10, 0.08, 1)
+color = Color(0.07, 0.15, 0.13, 1)
 
 [node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -29,9 +29,9 @@ offset_bottom = -12.0
 
 [node name="Title" type="Label" parent="VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.35, 1, 0.627, 1)
-theme_override_font_sizes/font_size = 20
-text = "SIGNAL"
+theme_override_colors/font_color = Color(0.91, 0.73, 0.47, 1)
+theme_override_font_sizes/font_size = 17
+text = "SATELLITE DOWNLINK"
 
 [node name="Target" type="Label" parent="VBox"]
 layout_mode = 2
@@ -40,3 +40,8 @@ text = "Target  F:0 A:0 P:0"
 [node name="Match" type="Label" parent="VBox"]
 layout_mode = 2
 text = "Match: 0%"
+
+[node name="Strength" type="ProgressBar" parent="VBox"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+show_percentage = false
