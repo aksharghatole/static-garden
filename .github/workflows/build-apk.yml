@@ -21,7 +21,10 @@ jobs:
           distribution: temurin
           java-version: '17'
       - name: Check shell syntax
-        run: bash -n build-apk.sh scripts/setup-codespace.sh scripts/export-android.sh
+        run: |
+          for script in build-apk.sh scripts/setup-codespace.sh scripts/export-android.sh; do
+            bash -n "$script" || exit 1
+          done
       - name: Cache Godot and export templates
         uses: actions/cache@v4
         with:
