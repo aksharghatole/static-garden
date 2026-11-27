@@ -83,6 +83,8 @@ func plant(plot_index: int, plant_id: String) -> bool:
 	return true
 
 func advance_tick() -> void:
+	# Resolve growth against the signal currently shown to the player.
+	var growth_chance := 0.35 + 0.5 * signal_match_strength()
 	tick += 1
 	for i in plots.size():
 		var p: Dictionary = plots[i]
@@ -90,9 +92,7 @@ func advance_tick() -> void:
 			continue
 		if p["stage"] >= 2:
 			continue
-		var strength := signal_match_strength()
-		var needed := 0.35 + 0.5 * (1.0 - strength)
-		if rng.randf() > needed:
+		if rng.randf() > growth_chance:
 			continue
 		p["ticks"] += 1
 		if p["ticks"] >= TICKS_PER_STAGE:
@@ -146,6 +146,8 @@ func to_dict() -> Dictionary:
 	return {
 		"version": 1,
 		"rng_seed": rng_seed,
+		# JSON numbers may lose 64-bit precision; preserve RNG state as text.
+		"rng_state": str(rng.state),
 		"tick": tick,
 		"fragments": fragments,
 		"antenna": antenna.duplicate(),
@@ -158,6 +160,9 @@ func to_dict() -> Dictionary:
 func from_dict(d: Dictionary) -> void:
 	rng_seed = int(d.get("rng_seed", 0))
 	rng.seed = rng_seed
+	var saved_state = d.get("rng_state", "")
+	if saved_state is String and saved_state.is_valid_int():
+		rng.state = int(saved_state)
 	tick = int(d.get("tick", 0))
 	fragments = int(d.get("fragments", 0))
 	var a: Dictionary = d.get("antenna", {})
