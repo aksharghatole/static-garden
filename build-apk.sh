@@ -46,7 +46,8 @@ run_checked() {
 }
 rm -f build/static-garden-debug.apk build/.static-garden-debug.tmp.apk
 run_checked build/import.log "$GODOT_BIN" --headless --path . --import
-run_checked build/smoke.log "$GODOT_BIN" --headless --path . --quit-after 5
+run_checked build/smoke.log env XDG_DATA_HOME="$config_dir/runtime-data" "$GODOT_BIN" --headless --path . --quit-after 5
+run_checked build/gameplay.log env XDG_DATA_HOME="$config_dir/test-data" "$GODOT_BIN" --headless --path . res://tests/gameplay.tscn
 run_checked build/export.log "$GODOT_BIN" --headless --path . --export-debug Android build/.static-garden-debug.tmp.apk
 test -s build/.static-garden-debug.tmp.apk
 unzip -tq build/.static-garden-debug.tmp.apk
