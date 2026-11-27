@@ -2,6 +2,8 @@ extends Node
 
 const PLANT_DEFS := preload("res://data/plants.gd")
 const PLOT_COUNT := 6
+const PLOT_COLUMNS := 3
+const HYBRID_CHANCE := 0.25
 const ANTENNA_MAX := 3
 const TICKS_PER_STAGE := 3
 
@@ -101,12 +103,47 @@ func advance_tick() -> void:
 	SignalBus.tick_advanced.emit(tick)
 	SignalBus.model_changed.emit()
 
+func adjacent_plots(plot_index: int) -> Array[int]:
+	var neighbors: Array[int] = []
+	if plot_index < 0 or plot_index >= PLOT_COUNT:
+		return neighbors
+	if plot_index % PLOT_COLUMNS > 0:
+		neighbors.append(plot_index - 1)
+	if plot_index % PLOT_COLUMNS < PLOT_COLUMNS - 1:
+		neighbors.append(plot_index + 1)
+	if plot_index >= PLOT_COLUMNS:
+		neighbors.append(plot_index - PLOT_COLUMNS)
+	if plot_index + PLOT_COLUMNS < PLOT_COUNT:
+		neighbors.append(plot_index + PLOT_COLUMNS)
+	return neighbors
+
+func try_hybrid(plot_index: int) -> String:
+	if plot_index < 0 or plot_index >= plots.size():
+		return ""
+	var parent: Dictionary = plots[plot_index]
+	if int(parent["stage"]) < 2:
+		return ""
+	var candidates: Array[String] = []
+	for index in adjacent_plots(plot_index):
+		if index >= plots.size():
+			continue
+		var neighbor: Dictionary = plots[index]
+		if int(neighbor["stage"]) < 2:
+			continue
+		var hybrid := PLANT_DEFS.hybrid_of(parent["plant_id"], neighbor["plant_id"])
+		if not hybrid.is_empty() and not unlocked_hybrids.has(hybrid) and not candidates.has(hybrid):
+			candidates.append(hybrid)
+	if candidates.is_empty() or rng.randf() >= HYBRID_CHANCE:
+		return ""
+	return candidates[rng.randi_range(0, candidates.size() - 1)]
+
 func harvest(plot_index: int) -> void:
 	if plot_index < 0 or plot_index >= plots.size():
 		return
 	var p: Dictionary = plots[plot_index]
 	if p["plant_id"] == "" or p["stage"] < 2:
 		return
+	var hybrid := try_hybrid(plot_index)
 	var def: Dictionary = PLANT_DEFS.get_plant(p["plant_id"])
 	var reward: int = int(def.get("reward", 1))
 	fragments += reward
@@ -116,6 +153,11 @@ func harvest(plot_index: int) -> void:
 	p["plant_id"] = ""
 	p["stage"] = 0
 	p["ticks"] = 0
+	if not hybrid.is_empty():
+		unlocked_hybrids.append(hybrid)
+		if not unlocked_plants.has(hybrid):
+			unlocked_plants.append(hybrid)
+		add_log("Hybrid discovered: %s! Seed unlocked. +%d fragments." % [PLANT_DEFS.display_name(hybrid), reward])
 	SignalBus.model_changed.emit()
 
 func unlock_plant(plant_id: String) -> void:

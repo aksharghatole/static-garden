@@ -2,6 +2,10 @@
 
 A cozy, offline garden puzzle game about growing plants guided by signals from a dying satellite. Tune your antenna, advance time, harvest plants and spend fragments to unlock new seeds.
 
+## Hybrid breeding
+
+Harvest a mature base plant beside another mature base plant for a 25% chance to discover one new hybrid. The six hybrids can be planted like ordinary seeds and are recorded in the journal. Only horizontal and vertical neighbors count; normal harvest rewards are retained.
+
 ## Play on Android
 
 1. Open [GitHub Actions](https://github.com/aksharghatole/static-garden/actions).
@@ -45,7 +49,7 @@ Use a disposable user data directory when running tests to avoid modifying perso
 ## Current limitations
 
 - Android debug APKs target ARM64; physical-device testing is still needed.
-- Audio assets, hybrid breeding, and extended progression are planned.
+- Audio assets and extended progression are planned.
 - Android back navigation and further visual polish are tracked in [issues](https://github.com/aksharghatole/static-garden/issues).
 
 Built with [Godot](https://godotengine.org/). See [LICENSE](LICENSE) for licensing.

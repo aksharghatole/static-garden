@@ -47,13 +47,20 @@ func _build_plots() -> void:
 		plots_grid.add_child(b)
 
 func _refresh_seed_picker() -> void:
+	var previous: String = ""
+	if seed_picker.selected >= 0:
+		previous = str(seed_picker.get_item_metadata(seed_picker.selected))
 	seed_picker.clear()
 	for i in GameState.unlocked_plants.size():
 		var pid: String = GameState.unlocked_plants[i]
 		seed_picker.add_item(PLANT_DEFS.display_name(pid), i)
 		seed_picker.set_item_metadata(i, pid)
+		if pid == previous:
+			seed_picker.select(i)
 
 func _refresh() -> void:
+	if seed_picker.item_count != GameState.unlocked_plants.size():
+		_refresh_seed_picker()
 	fragments_label.text = "Fragments: %d" % GameState.fragments
 	tick_label.text = "Tick: %d" % GameState.tick
 
@@ -112,7 +119,10 @@ func _on_unlock() -> void:
 	if GameState.try_unlock_with_fragments():
 		_refresh_seed_picker()
 	else:
-		GameState.add_log("Need 5 fragments to unlock a new seed.")
+		if GameState.fragments < 5:
+			GameState.add_log("Need 5 fragments to unlock a new seed.")
+		else:
+			GameState.add_log("All base seeds unlocked. Harvest neighboring mature plants to discover hybrids.")
 
 func _on_log(msg: String) -> void:
 	log_label.text = msg
