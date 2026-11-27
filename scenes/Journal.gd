@@ -41,4 +41,4 @@ func _populate() -> void:
 	list.add_child(instruction)
 
 func _on_back() -> void:
-	get_tree().change_scene_to_file("res://scenes/MainMenu.tscn")
+	SceneRouter.go_to(SceneRouter.MENU, true)

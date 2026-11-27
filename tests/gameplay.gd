@@ -65,6 +65,18 @@ func _ready() -> void:
 	check(plot.stage == 2 and plot.stage_label.text == "Ready", "View should display mature plant")
 	plot.pressed.emit()
 	check(plot.plant_id == "" and GameState.fragments == 1, "Mature plot tap should harvest")
+	check(SceneRouter.back_action(SceneRouter.MENU) == "quit", "Main menu back saves and quits")
+	check(SceneRouter.back_action(SceneRouter.JOURNAL) == "menu", "Journal back returns to menu")
+	check(SceneRouter.back_action(SceneRouter.SETTINGS) == "menu", "Settings back returns to menu")
+	for attempt in range(3):
+		SceneRouter.handle_back(garden)
+		check(garden.pause_overlay.visible and get_tree().paused, "Back opens and pauses garden")
+		SceneRouter.handle_back(garden)
+		check(not garden.pause_overlay.visible and not get_tree().paused, "Second back resumes garden")
+	garden.menu_button.pressed.emit()
+	check(garden.pause_overlay.visible, "Menu button opens pause overlay")
+	garden.pause_overlay.resume_button.pressed.emit()
+	check(not get_tree().paused, "Resume button unpauses")
 	garden.queue_free()
 	_test_hybrids()
 	if failures == 0:

@@ -18,5 +18,4 @@ func _on_reset() -> void:
 	AudioManager.play_sfx("tick")
 
 func _on_back() -> void:
-	SaveManager.save_now()
-	get_tree().change_scene_to_file("res://scenes/MainMenu.tscn")
+	SceneRouter.go_to(SceneRouter.MENU, true)
