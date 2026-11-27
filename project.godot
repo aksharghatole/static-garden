@@ -11,6 +11,7 @@ SignalBus="*res://autoload/SignalBus.gd"
 GameState="*res://autoload/GameState.gd"
 SaveManager="*res://autoload/SaveManager.gd"
 AudioManager="*res://autoload/AudioManager.gd"
+SceneRouter="*res://autoload/SceneRouter.gd"
 
 [display]
 window/size/viewport_width=540

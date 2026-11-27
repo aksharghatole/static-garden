@@ -2,6 +2,8 @@ extends Control
 
 const PLANT_DEFS := preload("res://data/plants.gd")
 const PLOT_VIEW := preload("res://components/PlotView.tscn")
+const PAUSE_OVERLAY := preload("res://ui/PauseOverlay.tscn")
+var pause_overlay: Control
 
 @onready var dials_box: VBoxContainer = $Root/LeftPanel/Dials
 @onready var signal_panel: Control = $Root/RightPanel/SignalPanel
@@ -22,6 +24,8 @@ func _ready() -> void:
 	menu_button.pressed.connect(_on_menu)
 	seed_picker.item_selected.connect(_on_seed_selected)
 
+	pause_overlay = PAUSE_OVERLAY.instantiate()
+	add_child(pause_overlay)
 	_build_dials()
 	_build_plots()
 	_refresh_seed_picker()
@@ -127,6 +131,9 @@ func _on_unlock() -> void:
 func _on_log(msg: String) -> void:
 	log_label.text = msg
 
+func toggle_pause() -> void:
+	if is_instance_valid(pause_overlay):
+		pause_overlay.toggle()
+
 func _on_menu() -> void:
-	SaveManager.save_now()
-	get_tree().change_scene_to_file("res://scenes/MainMenu.tscn")
+	toggle_pause()

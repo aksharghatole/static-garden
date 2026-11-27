@@ -6,6 +6,8 @@ extends Control
 @onready var quit_button: Button = $VBox/QuitButton
 
 func _ready() -> void:
+	if SaveManager.save_exists():
+		SaveManager.load_game()
 	play_button.pressed.connect(_on_play)
 	journal_button.pressed.connect(_on_journal)
 	settings_button.pressed.connect(_on_settings)
@@ -16,14 +18,13 @@ func _on_play() -> void:
 		SaveManager.load_game()
 	else:
 		GameState.new_game()
-	get_tree().change_scene_to_file("res://scenes/Garden.tscn")
+	SceneRouter.go_to(SceneRouter.GARDEN)
 
 func _on_journal() -> void:
-	get_tree().change_scene_to_file("res://scenes/Journal.tscn")
+	SceneRouter.go_to(SceneRouter.JOURNAL)
 
 func _on_settings() -> void:
-	get_tree().change_scene_to_file("res://scenes/Settings.tscn")
+	SceneRouter.go_to(SceneRouter.SETTINGS)
 
 func _on_quit() -> void:
-	SaveManager.save_now()
-	get_tree().quit()
+	SceneRouter.quit_saved()
