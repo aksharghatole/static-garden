@@ -1,0 +1,52 @@
+name: Android APK
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Check shell syntax
+        run: |
+          for script in build-apk.sh scripts/setup-codespace.sh scripts/export-android.sh; do
+            bash -n "$script" || exit 1
+          done
+      - name: Cache Godot and export templates
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates/4.2.2.stable
+          key: godot-4.2.2-android-v1-${{ runner.os }}
+      - name: Set up Android build tools
+        run: bash scripts/setup-codespace.sh
+      - name: Build and verify signed debug APK
+        run: bash build-apk.sh
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-garden-debug
+          path: build/static-garden-debug.apk
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload diagnostic logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: build/*.log
+          if-no-files-found: ignore
