@@ -83,10 +83,10 @@ func _refresh() -> void:
 		log_label.text = GameState.log_history[0]
 
 func _on_dial_changed(axis: String, value: int) -> void:
-	AudioManager.play_sfx("tick")
 	var current: int = int(GameState.antenna.get(axis, 0))
 	var delta: int = value - current
 	if delta != 0:
+		AudioManager.play_sfx("tick")
 		GameState.adjust_antenna(axis, delta)
 
 func _on_plot_pressed(index: int) -> void:
@@ -110,6 +110,7 @@ func _on_seed_selected(_i: int) -> void:
 	pass
 
 func _on_tick() -> void:
+	AudioManager.play_sfx("advance")
 	GameState.advance_tick()
 
 func _on_harvest() -> void:
@@ -122,6 +123,7 @@ func _on_harvest() -> void:
 
 func _on_unlock() -> void:
 	if GameState.try_unlock_with_fragments():
+		AudioManager.play_sfx("unlock")
 		_refresh_seed_picker()
 	else:
 		if GameState.fragments < 5:

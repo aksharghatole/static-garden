@@ -155,6 +155,7 @@ func harvest(plot_index: int) -> void:
 	p["ticks"] = 0
 	if not hybrid.is_empty():
 		unlocked_hybrids.append(hybrid)
+		SignalBus.hybrid_discovered.emit(hybrid)
 		if not unlocked_plants.has(hybrid):
 			unlocked_plants.append(hybrid)
 		add_log("Hybrid discovered: %s! Seed unlocked. +%d fragments." % [PLANT_DEFS.display_name(hybrid), reward])

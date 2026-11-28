@@ -9,3 +9,5 @@ signal antenna_changed(axis: String, value: int)
 signal log_added(message: String)
 signal game_loaded
 signal game_reset
+
+signal hybrid_discovered(plant_id: String)

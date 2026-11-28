@@ -81,6 +81,7 @@ func _ready() -> void:
 	garden.queue_free()
 	_test_hybrids()
 	await _test_hybrid_art()
+	_test_audio()
 	if failures == 0:
 		print("Gameplay regression tests passed")
 	get_tree().quit(0 if failures == 0 else 1)
@@ -143,3 +144,28 @@ func _test_hybrid_art() -> void:
 		await get_tree().process_frame
 		check(art.plant_id == pid and art.stage == 2, "Hybrid art displays " + pid)
 	art.queue_free()
+
+func _test_audio() -> void:
+	var synth := preload("res://audio/Soundscape.gd")
+	var loop := synth.ambient()
+	check(loop.loop_mode == AudioStreamWAV.LOOP_FORWARD, "Ambient audio loops")
+	check(loop.data.size() == synth.RATE * 8 * 2, "Ambient PCM sample count")
+	check(loop.loop_end == synth.RATE * 8, "Ambient loop endpoint")
+	for key in ["tick", "plant", "harvest", "advance", "unlock", "hybrid"]:
+		check(AudioManager._sounds.has(key), "Sound is available: " + key)
+		var stream: AudioStreamWAV = AudioManager._sounds[key]
+		check(stream.data.size() > 0 and stream.mix_rate == synth.RATE, "Generated sound has PCM data")
+	var old_master := AudioManager.master_volume
+	var old_music := AudioManager.music_volume
+	var old_sfx := AudioManager.sfx_volume
+	AudioManager.set_master_volume(-1.0)
+	check(AudioManager.master_volume == 0.0, "Master volume clamps")
+	AudioManager.set_music_volume(0.25)
+	AudioManager.set_sfx_volume(0.5)
+	var config := ConfigFile.new()
+	check(config.load(AudioManager.SETTINGS_PATH) == OK, "Audio preferences persisted")
+	check(is_equal_approx(float(config.get_value("audio", "music", -1.0)), 0.25), "Music volume saved")
+	check(is_equal_approx(float(config.get_value("audio", "sfx", -1.0)), 0.5), "SFX volume saved")
+	AudioManager.set_master_volume(old_master)
+	AudioManager.set_music_volume(old_music)
+	AudioManager.set_sfx_volume(old_sfx)
