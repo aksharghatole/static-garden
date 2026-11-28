@@ -6,19 +6,18 @@ extends Control
 @onready var quit_button: Button = $VBox/QuitButton
 
 func _ready() -> void:
-	if SaveManager.save_exists():
-		SaveManager.load_game()
+	if not SaveManager.recovery_status.is_empty():
+		$VBox/Tagline.text = SaveManager.recovery_status
+		$VBox/Tagline.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	play_button.disabled = SaveManager.writes_blocked
 	play_button.pressed.connect(_on_play)
 	journal_button.pressed.connect(_on_journal)
 	settings_button.pressed.connect(_on_settings)
 	quit_button.pressed.connect(_on_quit)
 
 func _on_play() -> void:
-	if SaveManager.save_exists():
-		SaveManager.load_game()
-	else:
-		GameState.new_game()
-	SceneRouter.go_to(SceneRouter.GARDEN)
+	if not SaveManager.writes_blocked:
+		SceneRouter.go_to(SceneRouter.GARDEN)
 
 func _on_journal() -> void:
 	SceneRouter.go_to(SceneRouter.JOURNAL)
