@@ -82,6 +82,7 @@ func _ready() -> void:
 	_test_hybrids()
 	await _test_hybrid_art()
 	_test_audio()
+	_test_save_recovery()
 	if failures == 0:
 		print("Gameplay regression tests passed")
 	get_tree().quit(0 if failures == 0 else 1)
@@ -169,3 +170,36 @@ func _test_audio() -> void:
 	AudioManager.set_master_volume(old_master)
 	AudioManager.set_music_volume(old_music)
 	AudioManager.set_sfx_volume(old_sfx)
+
+func _test_save_recovery() -> void:
+	var schema := preload("res://data/SaveSchema.gd")
+	SaveManager.reset_game()
+	GameState.fragments = 42
+	check(SaveManager.save_now(), "Save valid garden")
+	GameState.fragments = 99
+	check(SaveManager.save_now(), "Rotate validated backup")
+	check(SaveManager._write(SaveManager.SAVE_PATH, "{truncated"), "Simulate interrupted write")
+	check(SaveManager.load_game(), "Recover valid backup")
+	check(GameState.fragments == 42, "Backup restores prior progress")
+	check(schema.valid(SaveManager._read(SaveManager.SAVE_PATH)), "Recovered primary is valid")
+	var malformed := GameState.to_dict()
+	malformed.plots[0].stage = 9
+	check(not schema.valid(malformed), "Reject invalid growth stage")
+	malformed = GameState.to_dict()
+	malformed.antenna = []
+	check(not schema.valid(malformed), "Reject invalid antenna data")
+	var temporary := GameState.to_dict()
+	temporary.fragments = 73
+	check(SaveManager._write(SaveManager.TMP_PATH, JSON.stringify(temporary)), "Prepare complete temporary save")
+	check(SaveManager._write(SaveManager.SAVE_PATH, "{}"), "Simulate missing primary data")
+	check(SaveManager.load_game(), "Recover complete temporary save")
+	check(GameState.fragments == 73, "Temporary progress retained")
+	var future := GameState.to_dict()
+	future.version = 2
+	check(SaveManager._write(SaveManager.SAVE_PATH, JSON.stringify(future)), "Prepare newer version save")
+	check(not SaveManager.load_game() and SaveManager.writes_blocked, "Protect newer version save")
+	check(not SaveManager.save_now(), "Refuse to overwrite newer version")
+	check(SaveManager._read(SaveManager.SAVE_PATH).version == 2, "Newer version retained")
+	SaveManager.reset_game()
+	check(not SaveManager.writes_blocked and GameState.fragments == 0, "Explicit reset re-enables saving")
+	check(not FileAccess.file_exists(SaveManager.BAK_PATH), "Reset removes backup")

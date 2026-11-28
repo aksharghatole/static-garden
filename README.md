@@ -6,6 +6,10 @@ A cozy, offline garden puzzle game about growing plants guided by signals from a
 
 Harvest a mature base plant beside another mature base plant for a 25% chance to discover one new hybrid. The six hybrids can be planted like ordinary seeds and are recorded in the journal. Only horizontal and vertical neighbors count; normal harvest rewards are retained.
 
+## Save recovery
+
+Progress is validated before loading and writing. A same-directory temporary save is promoted by rename; the previous valid primary is retained as a backup. If the primary is invalid, the game attempts to recover a complete temporary file or backup. Unrecoverable or newer-version saves are protected from automatic overwrite; Settings offers an explicitly confirmed reset. Backups remain local to this installation, not cloud backups.
+
 ## Soundscape
 
 An original looping ambient synthesizer and six short interaction sounds are generated locally from PCM samples, with no external audio files or network access. Master, ambient and effects volumes are independently adjustable and saved between sessions.

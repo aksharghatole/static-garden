@@ -17,8 +17,18 @@ func _ready() -> void:
 	back_btn.pressed.connect(_on_back)
 
 func _on_reset() -> void:
-	SaveManager.reset_game()
-	AudioManager.play_sfx("tick")
+	var dialog := ConfirmationDialog.new()
+	dialog.title = "Reset garden?"
+	dialog.dialog_text = "This permanently deletes your garden, hybrids and backup saves."
+	dialog.ok_button_text = "Reset garden"
+	add_child(dialog)
+	dialog.confirmed.connect(func():
+		SaveManager.reset_game()
+		AudioManager.play_sfx("tick")
+		dialog.queue_free()
+	)
+	dialog.canceled.connect(dialog.queue_free)
+	dialog.popup_centered(Vector2i(360, 180))
 
 func _on_back() -> void:
 	SceneRouter.go_to(SceneRouter.MENU, true)
